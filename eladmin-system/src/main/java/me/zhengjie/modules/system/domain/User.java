@@ -10,6 +10,8 @@ import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -63,6 +65,8 @@ public class User implements Serializable {
     @OneToOne
     @JoinColumn(name = "dept_id")
     private Dept dept;
+
+//    private HashMap userDp;
 
     @Override
     public String toString() {
