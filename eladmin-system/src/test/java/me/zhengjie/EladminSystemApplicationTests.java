@@ -1,6 +1,8 @@
 package me.zhengjie;
 
 import me.zhengjie.modules.system.service.RoleService;
+import me.zhengjie.modules.system.service.Test0Service;
+import me.zhengjie.modules.system.service.dto.Test0DTO;
 import me.zhengjie.modules.system.service.dto.UrlDTO;
 import me.zhengjie.modules.system.service.impl.UrlServiceImpl;
 import org.junit.Test;
@@ -16,11 +18,15 @@ public class EladminSystemApplicationTests {
     private UrlServiceImpl urlService;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private Test0Service test0Service;
 
     @Test
     public void contextLoads() {
-        UrlDTO byId = urlService.findById(5L);
-        System.out.println(byId);
+//        UrlDTO byId = urlService.findById(5L);
+//        System.out.println(byId);
+        Test0DTO byId1 = test0Service.findById(3);
+        System.out.println(byId1);
     }
 
 }

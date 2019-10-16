@@ -74,7 +74,7 @@ public class UrlServiceImpl implements UrlService {
             throw new EntityExistException(Url.class,"name",resources.getName());
         }
 
-        url.setName(resources.getName());
+//        url.setName(resources.getName());
         url.setName(resources.getName());
         url.setPid(resources.getPid());
         url.setUrl(resources.getUrl());
