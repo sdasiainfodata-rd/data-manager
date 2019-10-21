@@ -47,6 +47,7 @@
             <artifactId>quartz</artifactId>
         </dependency>
 
+        <!--访问https-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>

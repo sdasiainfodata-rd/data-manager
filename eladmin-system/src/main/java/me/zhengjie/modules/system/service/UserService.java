@@ -30,14 +30,14 @@ public interface UserService {
      * @return
      */
     @CacheEvict(allEntries = true)
-    UserDTO create(User resources);
+    UserDTO create(UserDTO resources);
 
     /**
      * update
      * @param resources
      */
     @CacheEvict(allEntries = true)
-    void update(User resources);
+    void update(UserDTO resources);
 
     /**
      * delete

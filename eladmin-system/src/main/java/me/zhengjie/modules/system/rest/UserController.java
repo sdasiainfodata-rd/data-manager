@@ -13,6 +13,7 @@ import me.zhengjie.modules.system.service.RoleService;
 import me.zhengjie.modules.system.service.dto.RoleSmallDTO;
 import me.zhengjie.modules.system.service.dto.UserDTO;
 import me.zhengjie.modules.system.service.dto.UserQueryCriteria;
+import me.zhengjie.modules.system.service.dto.dp.UserDP;
 import me.zhengjie.modules.utils.RestTemplateUtils;
 import me.zhengjie.service.PictureService;
 import me.zhengjie.service.VerificationCodeService;
@@ -104,16 +105,16 @@ public class UserController {
     @Log("新增用户")
     @PostMapping(value = "/users")
     @PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_CREATE')")
-    public ResponseEntity create(@Validated @RequestBody User resources){
-        checkLevel(resources);
+    public ResponseEntity create(@Validated @RequestBody UserDTO resources){
+//        checkLevel(resources);
         return new ResponseEntity(userService.create(resources),HttpStatus.CREATED);
     }
 
     @Log("修改用户")
     @PutMapping(value = "/users")
     @PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_EDIT')")
-    public ResponseEntity update(@Validated(User.Update.class) @RequestBody User resources){
-        checkLevel(resources);
+    public ResponseEntity update(@Validated(User.Update.class) @RequestBody UserDTO resources){
+//        checkLevel(resources);
         userService.update(resources);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

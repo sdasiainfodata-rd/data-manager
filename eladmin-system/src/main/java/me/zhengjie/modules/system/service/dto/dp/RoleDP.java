@@ -19,4 +19,5 @@ public class RoleDP {
 //    @Field("collection_feilds")
 //    private HashMap<String,Set<String>> collectionFeilds;
     private boolean isDelete;
+    private String id;
 }
