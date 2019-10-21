@@ -56,13 +56,17 @@ public class UserServiceImpl implements UserService {
         Page<User> page = userRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable);
         Page<UserDTO> pageDTO = (Page<UserDTO>) page.map(userMapper::toDto);
         List<UserDTO> userDTOList = pageDTO.getContent();
+        //获取当前登录的用户名
         String user = SecurityContextHolder.getContext().getAuthentication().getName();
         if (StringUtils.isEmpty(user)) return null;
+        //生成当前登录用户的token
         String token = jwtTokenUtil.generateToken(user);
         if (userDTOList == null) return null;
+        //遍历userDTOList,设置userDp属性
         for (UserDTO userDTO : userDTOList) {
             String username = userDTO.getUsername();
             String url = host+"/users/"+username;
+            //访问数据中台
             HashMap userDp = (HashMap) restTemplateUtils.sendGet(url, token);
             System.out.println(userDp);
             userDTO.setUserDP(userDp);
@@ -101,6 +105,7 @@ public class UserServiceImpl implements UserService {
             resources.setPassword("$2a$10$.inJIttGOsuxAhU81jVR2eQMEmetEKDY11Kbm20f70RR4VqKJuqmy");
         }
         resources.setAvatar("https://i.loli.net/2019/04/04/5ca5b971e1548.jpeg");
+        //
         return userMapper.toDto(userRepository.save(resources));
     }
 
