@@ -10,6 +10,7 @@ import me.zhengjie.modules.utils.RestTemplateUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -36,6 +37,8 @@ public class EladminSystemApplicationTests {
     private RestTemplate restTemplate;
     @Autowired
     private RestTemplateUtils restTemplateUtils;
+    @Value("${remote.server.url}")
+    private String host;
 
     @Test
     public void contextLoads() {
@@ -72,5 +75,9 @@ public class EladminSystemApplicationTests {
 
     }
 
+    @Test
+    public void printUrl(){
+        System.out.println(host);
+    }
 }
 

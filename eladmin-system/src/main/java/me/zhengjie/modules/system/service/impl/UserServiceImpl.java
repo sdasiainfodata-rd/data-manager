@@ -1,6 +1,7 @@
 package me.zhengjie.modules.system.service.impl;
 
 import me.zhengjie.modules.monitor.service.RedisService;
+import me.zhengjie.modules.security.utils.JwtTokenUtil;
 import me.zhengjie.modules.system.domain.User;
 import me.zhengjie.exception.EntityExistException;
 import me.zhengjie.exception.EntityNotFoundException;
@@ -9,18 +10,22 @@ import me.zhengjie.modules.system.service.UserService;
 import me.zhengjie.modules.system.service.dto.UserDTO;
 import me.zhengjie.modules.system.service.dto.UserQueryCriteria;
 import me.zhengjie.modules.system.service.mapper.UserMapper;
+import me.zhengjie.modules.utils.RestTemplateUtils;
 import me.zhengjie.utils.PageUtil;
 import me.zhengjie.utils.QueryHelp;
+import me.zhengjie.utils.StringUtils;
 import me.zhengjie.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.Date;
-import java.util.Optional;
+
+import java.util.*;
 
 /**
  * @author Zheng Jie
@@ -39,10 +44,31 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RedisService redisService;
 
+    @Autowired
+    private RestTemplateUtils restTemplateUtils;
+    @Value("${remote.server.url}")
+    private String host;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
     @Override
     public Object queryAll(UserQueryCriteria criteria, Pageable pageable) {
         Page<User> page = userRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable);
-        return PageUtil.toPage(page.map(userMapper::toDto));
+        Page<UserDTO> pageDTO = (Page<UserDTO>) page.map(userMapper::toDto);
+        List<UserDTO> userDTOList = pageDTO.getContent();
+        String user = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (StringUtils.isEmpty(user)) return null;
+        String token = jwtTokenUtil.generateToken(user);
+        if (userDTOList == null) return null;
+        for (UserDTO userDTO : userDTOList) {
+            String username = userDTO.getUsername();
+            String url = host+"/users/"+username;
+            HashMap userDp = (HashMap) restTemplateUtils.sendGet(url, token);
+            System.out.println(userDp);
+            userDTO.setUserDP(userDp);
+        }
+
+        return PageUtil.toPage(pageDTO);
     }
 
     @Override

@@ -4,28 +4,33 @@ import me.zhengjie.aop.log.Log;
 import me.zhengjie.config.DataScope;
 import me.zhengjie.domain.Picture;
 import me.zhengjie.domain.VerificationCode;
+import me.zhengjie.modules.security.utils.JwtTokenUtil;
 import me.zhengjie.modules.system.domain.User;
 import me.zhengjie.exception.BadRequestException;
 import me.zhengjie.modules.system.domain.vo.UserPassVo;
 import me.zhengjie.modules.system.service.DeptService;
 import me.zhengjie.modules.system.service.RoleService;
 import me.zhengjie.modules.system.service.dto.RoleSmallDTO;
+import me.zhengjie.modules.system.service.dto.UserDTO;
 import me.zhengjie.modules.system.service.dto.UserQueryCriteria;
+import me.zhengjie.modules.utils.RestTemplateUtils;
 import me.zhengjie.service.PictureService;
 import me.zhengjie.service.VerificationCodeService;
 import me.zhengjie.utils.*;
 import me.zhengjie.modules.system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -57,6 +62,7 @@ public class UserController {
     private VerificationCodeService verificationCodeService;
 
 
+
     @Log("查询用户")
     @GetMapping(value = "/users")
     @PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_SELECT')")
@@ -83,15 +89,17 @@ public class UserController {
             criteria.setDeptIds(result);
             if (result.size() == 0) {
                 return new ResponseEntity(PageUtil.toPage(null,0),HttpStatus.OK);
-            } else return new ResponseEntity(userService.queryAll(criteria,pageable),HttpStatus.OK);
+            } else return new ResponseEntity(userService.queryAll(criteria, pageable),HttpStatus.OK);
         // 否则取并集
         } else {
             result.addAll(deptSet);
             result.addAll(deptIds);
             criteria.setDeptIds(result);
-            return new ResponseEntity(userService.queryAll(criteria,pageable),HttpStatus.OK);
+            return new ResponseEntity(userService.queryAll(criteria, pageable),HttpStatus.OK);
         }
     }
+
+
 
     @Log("新增用户")
     @PostMapping(value = "/users")

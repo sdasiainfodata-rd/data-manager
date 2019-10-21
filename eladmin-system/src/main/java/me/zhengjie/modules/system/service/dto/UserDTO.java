@@ -3,9 +3,13 @@ package me.zhengjie.modules.system.service.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import me.zhengjie.modules.system.service.dto.dp.UserDP;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -44,4 +48,7 @@ public class UserDTO implements Serializable {
     private DeptSmallDTO dept;
 
     private Long deptId;
+
+    private HashMap userDP;
+
 }
